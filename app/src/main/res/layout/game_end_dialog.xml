@@ -12,7 +12,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="8dp"
-            android:text="@string/game_end_dialog_headline" />
+            android:text="@string/game_end_dialog_headline"
+            android:textSize="16sp"/>
 
 
         <TextView
@@ -22,7 +23,8 @@
             android:gravity="center"
             android:padding="8dp"
             android:textStyle="bold"
-            tools:text="Arhan Ashik" />
+            tools:text="Arhan Ashik"
+            android:textSize="18sp"/>
 
     </LinearLayout>
 </layout>
