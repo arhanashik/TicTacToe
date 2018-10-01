@@ -19,10 +19,10 @@ public class Game {
     private static final String TAG = Game.class.getSimpleName();
     private static final int BOARD_SIZE = 3;
 
-    public Player player1;
-    public Player player2;
+    private Player player1;
+    private Player player2;
 
-    public Player currentPlayer = player1;
+    public Player currentPlayer;
     public Cell[][] cells;
 
     public MutableLiveData<Player> winner = new MutableLiveData<>();
@@ -48,7 +48,7 @@ public class Game {
         return false;
     }
 
-    public boolean hasThreeSameHorizontalCells() {
+    private boolean hasThreeSameHorizontalCells() {
         try {
             for (int i = 0; i < BOARD_SIZE; i++)
                 if (areEqual(cells[i][0], cells[i][1], cells[i][2]))
@@ -61,7 +61,7 @@ public class Game {
         }
     }
 
-    public boolean hasThreeSameVerticalCells() {
+    private boolean hasThreeSameVerticalCells() {
         try {
             for (int i = 0; i < BOARD_SIZE; i++)
                 if (areEqual(cells[0][i], cells[1][i], cells[2][i]))
@@ -73,7 +73,7 @@ public class Game {
         }
     }
 
-    public boolean hasThreeSameDiagonalCells() {
+    private boolean hasThreeSameDiagonalCells() {
         try {
             return areEqual(cells[0][0], cells[1][1], cells[2][2]) ||
                     areEqual(cells[0][2], cells[1][1], cells[2][0]);
@@ -83,7 +83,7 @@ public class Game {
         }
     }
 
-    public boolean isBoardFull() {
+    private boolean isBoardFull() {
         for (Cell[] row : cells)
             for (Cell cell : row)
                 if (cell == null || cell.isEmpty())
@@ -98,7 +98,7 @@ public class Game {
      * - both have equal values
      *
      * @param cells: Cells to check if are equal
-     * @return
+     * @return boolean
      */
     private boolean areEqual(Cell... cells) {
         if (cells == null || cells.length == 0)

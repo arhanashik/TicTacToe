@@ -12,7 +12,8 @@ import com.blackspider.androidmvvm.model.Player;
 import com.blackspider.androidmvvm.util.StringUtility;
 import com.blackspider.androidmvvm.viewmodel.GameViewModel;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements GameBeginDialog.GameBeginCallBack,
+        GameEndDialog.GameEndCallback {
 
     private static final String GAME_BEGIN_DIALOG_TAG = "game_dialog_tag";
     private static final String GAME_END_DIALOG_TAG = "game_end_dialog_tag";
@@ -26,13 +27,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void promptForPlayers() {
-        GameBeginDialog dialog = GameBeginDialog.newInstance(this);
+        GameBeginDialog dialog = GameBeginDialog.newInstance(this, this);
         dialog.setCancelable(false);
         dialog.show(getSupportFragmentManager(), GAME_BEGIN_DIALOG_TAG);
-    }
-
-    public void onPlayersSet(String player1, String player2) {
-        initDataBinding(player1, player2);
     }
 
     private void initDataBinding(String player1, String player2) {
@@ -50,8 +47,18 @@ public class GameActivity extends AppCompatActivity {
     @VisibleForTesting
     public void onGameWinnerChanged(Player winner) {
         String winnerName = winner == null || StringUtility.isNullOrEmpty(winner.name) ? NO_WINNER : winner.name;
-        GameEndDialog dialog = GameEndDialog.newInstance(this, winnerName);
+        GameEndDialog dialog = GameEndDialog.newInstance(this, winnerName, this);
         dialog.setCancelable(false);
         dialog.show(getSupportFragmentManager(), GAME_END_DIALOG_TAG);
+    }
+
+    @Override
+    public void onPlayerSelected(String player1, String player2) {
+        initDataBinding(player1, player2);
+    }
+
+    @Override
+    public void onGameRestart() {
+        promptForPlayers();
     }
 }

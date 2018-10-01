@@ -11,26 +11,32 @@ package com.blackspider.androidmvvm.view;
  */
 
 import android.app.Dialog;
+import android.content.Context;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 
 import com.blackspider.androidmvvm.R;
+import com.blackspider.androidmvvm.databinding.GameEndDialogBinding;
 
 public class GameEndDialog extends DialogFragment {
 
-    private View rootView;
-    private GameActivity activity;
+    private GameEndDialogBinding binding;
+    private Context context;
     private String winnerName;
 
-    public static GameEndDialog newInstance(GameActivity activity, String winnerName) {
+    private GameEndCallback callback;
+
+    public static GameEndDialog newInstance(Context context, String winnerName,
+                                            GameEndCallback callback) {
         GameEndDialog dialog = new GameEndDialog();
-        dialog.activity = activity;
+        dialog.context = context;
         dialog.winnerName = winnerName;
+        dialog.callback = callback;
+
         return dialog;
     }
 
@@ -38,10 +44,10 @@ public class GameEndDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         initViews();
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                .setView(rootView)
+        AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setView(binding.getRoot())
                 .setCancelable(false)
-                .setPositiveButton(R.string.done, ((dialog, which) -> onNewGame()))
+                .setPositiveButton(R.string.play_again, ((dialog, which) -> onNewGame()))
                 .create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setCancelable(false);
@@ -49,13 +55,17 @@ public class GameEndDialog extends DialogFragment {
     }
 
     private void initViews() {
-        rootView = LayoutInflater.from(getContext())
-                .inflate(R.layout.game_end_dialog, null, false);
-        ((TextView) rootView.findViewById(R.id.tv_winner)).setText(winnerName);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        binding = DataBindingUtil.inflate(inflater, R.layout.game_end_dialog, null, false);
+        binding.tvWinner.setText(winnerName);
     }
 
     private void onNewGame() {
         dismiss();
-        activity.promptForPlayers();
+        callback.onGameRestart();
+    }
+
+    public interface GameEndCallback{
+        void onGameRestart();
     }
 }
